@@ -1,2 +1,2 @@
 # test-pr-actions
-Wow
+Wow!
