@@ -18,7 +18,7 @@ jobs:
         git status 
         git config --global user.email "${GITHUB_ACTOR}"
         git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
-        git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc
+        git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc rc/test
         gh pr diff --patch ${{ github.event.pull_request.number }} | git am --whitespace=fix
         git push -u origin sync/pr-${{ github.event.pull_request.number }}-to-rc
         gh pr create --base "rc/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "#${{ github.event.pull_request.number }}"
