@@ -12,6 +12,7 @@ jobs:
     name: Cherry-pick and create PR to RC branch 
     env:
       GH_TOKEN: ${{ github.token }}
+      TAG_PREFIX: "staging_"
       RC_BRANCH_PREFIX: "rc/"
     if: |
       (github.event.pull_request.merged == true 
@@ -29,14 +30,14 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Find the latest staging_* tag
+    - name: Find the latest ${{ env.TAG_PREFIX }}* tag
       run: |
-        tag=$(git tag --sort=creatordate -l 'staging_*'| tail -1)
+        tag=$(git tag --sort=creatordate -l '$TAG_PREFIX*'| tail -1)
         echo "STAGING_TAG=$tag" >> $GITHUB_ENV
         echo "Staging tag: $tag"
     - name: Find the latest RC branch name
       run: |
-        ref=$(git branch -a --contains $STAGING_TAG | grep -F ${{ env.RC_BRANCH_PREFIX }} | awk -F 'remotes/origin/' '{print $2}' )
+        ref=$(git branch -a --contains $STAGING_TAG | grep -F $RC_BRANCH_PREFIX | awk -F 'remotes/origin/' '{print $2}' )
         echo "RC_BRANCH_REF=$ref" >> $GITHUB_ENV
         echo "RC BRANCH: $ref"
     - name: Check for RC branch existence
