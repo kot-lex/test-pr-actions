@@ -29,11 +29,14 @@ jobs:
         fetch-depth: 0
     - name: Find the latest staging_* tag
       run: |
-        echo "STAGING_TAG=$(git tag --sort=creatordate -l 'staging_*'| tail -1)" > $GITHUB_ENV
-        echo "Staging tag: $STAGING_TAG"
+        tag=$(git tag --sort=creatordate -l 'staging_*'| tail -1)
+        echo "STAGING_TAG=$tag" >> $GITHUB_ENV
+        echo "Staging tag: $tag"
     - name: Find the latest RC branch name
       run: |
-        echo "RC_BRANCH_REF=$(git branch -a --contains $STAGING_TAG | cut -d'/' -f 3-)" > $GITHUB_ENV
+        ref=$(git branch -a --contains $STAGING_TAG | cut -d'/' -f 3-)
+        echo "RC_BRANCH_REF=$ref" >> $GITHUB_ENV
+        echo "RC BRANCH: $ref"
     - name: Check for RC branch existence
       run: |
          if [ "$RC_BRANCH_REF" != '' ]; then
