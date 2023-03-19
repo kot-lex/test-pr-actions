@@ -9,7 +9,7 @@ on:
 
 jobs:
   create_pr:
-  name: Cherry-pick and create PR to RC branch 
+    name: Cherry-pick and create PR to RC branch 
     env:
       GH_TOKEN: ${{ github.token }}
     if: |
