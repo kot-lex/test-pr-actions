@@ -15,13 +15,11 @@ jobs:
       (github.event.pull_request.merged == true 
       && github.event.pull_request.base.ref == 'main'
       && contains(github.event.pull_request.labels.*.name, 'RC')
-      && echo "Branch is merged to develop and contain RC label"
       ) 
       || (
       github.event.pull_request.merged == true 
       && github.event.pull_request.base.ref == 'main'
       && github.event.label.name == 'RC'
-      && echo "RC label is added to already merged PR"
       )
     runs-on: ubuntu-latest
     steps:
