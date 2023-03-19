@@ -14,4 +14,7 @@ jobs:
     - uses: actions/checkout@v2
     - run: |
         git status 
-        echo ${GITHUB_REF##*/}
+        git checkout -b sync/pr-{{ github.event.pull_request.id }}-to-rc
+        gh pr diff --patch {{ github.event.pull_request.id }} | git am
+        git push 
+        gh pr create -b "#{{ github.event.pull_request.id }}"
