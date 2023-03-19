@@ -8,12 +8,16 @@ on:
 
 jobs:
   create_pr:
+    env:
+      GH_TOKEN: ${{ github.token }}
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - run: |
         git status 
+        git config --global user.email "${GITHUB_ACTOR}"
+        git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
         git checkout -b sync/pr-${{ github.event.pull_request.id }}-to-rc
         gh pr diff --patch ${{ github.event.pull_request.id }} | git am
         git push -u origin sync/pr-${{ github.event.pull_request.id }}-to-rc
