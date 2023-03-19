@@ -36,7 +36,7 @@ jobs:
       run: | 
           git push -u origin sync/pr-${{ github.event.pull_request.number }}-to-rc
           createPr() {
-            gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "Changes from PR #${{ github.event.pull_request.number }} \n \n #${{ github.event.pull_request.body }}"
+            gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "Changes from PR #${{ github.event.pull_request.number }} $'\n\n' #${{ github.event.pull_request.body }}"
           }
           
           echo "PR_OUTPUT=$(createPr)" >> $GITHUB_ENV
