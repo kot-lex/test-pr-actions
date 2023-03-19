@@ -23,10 +23,21 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
+    - name: Find the latest RC branch name
+      run: |
+        echo "RC_BRANCH_REF=$(git branch -a --contains $(git tag --sort=creatordate -l 'staging_*'| tail -1) | cut -d'/' -f 3-)" > $GITHUB_ENV
+    - name: Check for RC branch existence
+      run: |
+         if [ "$RC_BRANCH_REF" != '' ]; then
+            echo "Found RC branch $RC_BRANCH_REF"
+          else
+            echo "RC branch not found";
+            exit 1;
+          fi        
     - name: Checkout RC branch
       uses: actions/checkout@v2
       with:
-       ref: RC/test
+       ref: ${{env.RC_BRANCH_REF}}
     - name: Create a branch and apply patch from PR
       id: patch
       run: |
@@ -46,7 +57,7 @@ jobs:
       run: | 
           git push -u origin sync/pr-${{ github.event.pull_request.number }}-to-rc
           createPr() {
-            gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "Changes from PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.body }}"
+            gh pr create --base $RC_BRANCH_REF --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "Changes from PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.body }}"
           }
           
           echo "PR_OUTPUT=$(createPr)" >> $GITHUB_ENV
