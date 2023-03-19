@@ -23,6 +23,10 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Find the latest staging_* tag
       run: |
         echo "STAGING_TAG=$(git tag --sort=creatordate -l 'staging_*'| tail -1)" > $GITHUB_ENV
@@ -38,17 +42,13 @@ jobs:
             echo "RC branch not found";
             exit 1;
           fi        
-    - name: Checkout RC branch
-      uses: actions/checkout@v2
-      with:
-       ref: ${{env.RC_BRANCH_REF}}
     - name: Create a branch and apply patch from PR
       id: patch
       run: |
           git status 
           git config --global user.email "${GITHUB_ACTOR}"
           git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
-          git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc
+          git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc $RC_BRANCH_REF
           gh pr diff --patch ${{ github.event.pull_request.number }} | git am --whitespace=fix || echo ::set-output name=status::failure
       continue-on-error: true
     - name: Leave comment in case of failure
