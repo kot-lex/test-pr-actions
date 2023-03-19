@@ -44,4 +44,4 @@ jobs:
 
     - name: Comment on success
       run: | 
-        gh pr comment ${{ github.event.pull_request.number }} --body "Created pr to RC branch, please merge ${{ PR_OUTPUT }}"
+        gh pr comment ${{ github.event.pull_request.number }} --body "Created pr to RC branch, please merge ${{ $PR_OUTPUT }}"
