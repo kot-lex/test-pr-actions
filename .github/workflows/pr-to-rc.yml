@@ -11,12 +11,12 @@ jobs:
   create_pr:
     env:
       GH_TOKEN: ${{ github.token }}
+    # Branch is merged to develop and contain RC label 
+    # Or RC label is added to already merged PR
     if: |
-      # Branch is merged to develop and contain RC label 
       (github.event.pull_request.merged == true 
       && github.event.pull_request.base.ref == 'main'
       && contains(github.event.pull_request.labels.*.name, 'RC'))
-      # Or RC label is added to already merged PR
       || (
       github.event.pull_request.merged == true 
       && github.event.pull_request.base.ref == 'main'
