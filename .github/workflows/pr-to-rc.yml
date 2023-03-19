@@ -35,8 +35,13 @@ jobs:
     - name: Push new branch and create a PR
       run: | 
           git push -u origin sync/pr-${{ github.event.pull_request.number }}-to-rc
-          gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "#${{ github.event.pull_request.number }}"
+          createPr() {
+            gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "#${{ github.event.pull_request.number }}"
+          }
+          
+          echo "PR_OUTPUT=$(createPr)" >> $GITHUB_ENV
+
 
     - name: Comment on success
       run: | 
-        gh pr comment ${{ github.event.pull_request.number }} --body "Created pr to RC branch, please merge"
+        gh pr comment ${{ github.event.pull_request.number }} --body "Created pr to RC branch, please merge ${{ PR_OUTPUT }}"
