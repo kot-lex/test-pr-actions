@@ -23,9 +23,12 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
+    - name: Find the latest staging_* tag
+      run: |
+        echo "STAGING_TAG=$(git tag --sort=creatordate -l 'staging_*'| tail -1)" > $GITHUB_ENV
     - name: Find the latest RC branch name
       run: |
-        echo "RC_BRANCH_REF=$(git branch -a --contains $(git tag --sort=creatordate -l 'staging_*'| tail -1) | cut -d'/' -f 3-)" > $GITHUB_ENV
+        echo "RC_BRANCH_REF=$(git branch -a --contains $STAGING_TAG | cut -d'/' -f 3-)" > $GITHUB_ENV
     - name: Check for RC branch existence
       run: |
          if [ "$RC_BRANCH_REF" != '' ]; then
