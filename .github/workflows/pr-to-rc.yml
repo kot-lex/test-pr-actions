@@ -29,7 +29,7 @@ jobs:
     - name: Leave comment in case of failure
       if: steps.patch.outputs.status == 'failure'
       run: |
-        gh pr comment ${{ github.event.pull_request.number }} --body "Failed to create a PR to RC branch, please do it mannually" 
+        gh pr comment ${{ github.event.pull_request.number }} --body "Failed to create a PR to RC branch, please do it manually" 
         exit 1
     
     - name: Push new branch and create a PR
