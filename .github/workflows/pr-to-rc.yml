@@ -32,12 +32,12 @@ jobs:
         fetch-depth: 0
     - name: Find the latest ${{ env.TAG_PREFIX }}* tag
       run: |
-        tag=$(git tag --sort=creatordate -l '$TAG_PREFIX*'| tail -1)
+        tag=$(git tag --sort=creatordate -l '${{ env.TAG_PREFIX }}*'| tail -1)
         echo "STAGING_TAG=$tag" >> $GITHUB_ENV
         echo "Staging tag: $tag"
     - name: Find the latest RC branch name
       run: |
-        ref=$(git branch -a --contains $STAGING_TAG | grep -F $RC_BRANCH_PREFIX | awk -F 'remotes/origin/' '{print $2}' )
+        ref=$(git branch -a --contains $STAGING_TAG | grep -F "${{ env.RC_BRANCH_PREFIX }}" | awk -F 'remotes/origin/' '{print $2}' )
         echo "RC_BRANCH_REF=$ref" >> $GITHUB_ENV
         echo "RC BRANCH: $ref"
     - name: Check for RC branch existence
