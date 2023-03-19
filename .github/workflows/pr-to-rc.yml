@@ -24,8 +24,19 @@ jobs:
           git config --global user.email "${GITHUB_ACTOR}"
           git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
           git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc
-          gh pr diff --patch ${{ github.event.pull_request.number }} | git am --whitespace=fix
+          gh pr diff --patch ${{ github.event.pull_request.number }} | git am --whitespace=fix || echo ::set-output name=status::failure
+      continue-on-error: true
+    - name: Leave comment in case of failure
+      if: steps.patch.outputs.status == 'failure'
+      run: |
+        gh pr comment ${{ github.event.pull_request.number }} --body "Failed to create a PR to RC branch, please do it mannually" 
+        exit 1
+    
     - name: Push new branch and create a PR
       run: | 
           git push -u origin sync/pr-${{ github.event.pull_request.number }}-to-rc
           gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "#${{ github.event.pull_request.number }}"
+
+    - name: Comment on success
+      run: | 
+        gh pr comment ${{ github.event.pull_request.number }} --body "Created pr to RC branch, please merge"
