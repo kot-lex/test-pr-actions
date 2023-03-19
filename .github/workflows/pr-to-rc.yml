@@ -7,10 +7,11 @@ on:
       - closed
 
 jobs:
-  if_merged:
+  create_pr:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - run: |
         git status 
         echo ${GITHUB_REF##*/}
