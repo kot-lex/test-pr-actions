@@ -8,8 +8,9 @@ on:
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true && pull_request_target == 'main'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
     steps:
     - run: |
         git status 
+        echo ${GITHUB_REF##*/}
