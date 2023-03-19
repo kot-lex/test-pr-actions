@@ -14,11 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: RC/test
     - run: |
         git status 
         git config --global user.email "${GITHUB_ACTOR}"
         git config --global user.name "${GITHUB_ACTOR}@users.noreply.github.com"
-        git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc RC/test
+        git checkout -b sync/pr-${{ github.event.pull_request.number }}-to-rc
         gh pr diff --patch ${{ github.event.pull_request.number }} | git am --whitespace=fix
         git push -u origin sync/pr-${{ github.event.pull_request.number }}-to-rc
         gh pr create --base "RC/test" --title "Automated: PR #${{ github.event.pull_request.number }} to RC" --body "#${{ github.event.pull_request.number }}"
